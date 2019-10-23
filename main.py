@@ -1,21 +1,15 @@
-from flask import Flask, jsonify, render_template, flash, request, redirect, url_for
-import DatabaseManager.database
-
-from flask_restplus import Api, Resource, fields
+from flask import Flask, render_template
+from DatabaseManager.tiny_db import TinyDB
+from DatabaseManager.JsonEncoder import RestEncoder
 
 import json
 
 app = Flask(__name__)
 
-class DatabaseManager:
-    _databases = ['Animals', 'Friends']
+db_manager = TinyDB()
 
-    def get_database_names(self):
-        return self._databases
-
-
-db_manager = DatabaseManager()
-
+def jsonify(obj):
+    return json.dumps(obj, cls=RestEncoder)
 
 @app.route("/")
 def hello():
@@ -24,18 +18,18 @@ def hello():
 
 @app.route("/api/databases", methods=['GET'])
 def get_database_names():
-    return jsonify(db_manager.get_database_names())
+    return jsonify(db_manager.get_all())
 
 
 @app.route('/api/databases/<string:db_name>', methods=['GET'])
 def get_databse(db_name):
-    db = db_manager.get_database(db_name)
-    return jsonify(db.get_table_names)
+    db = db_manager.get(db_name)
+    return jsonify(db)
 
 
 @app.route('/api/databases/<string:db_name>', methods=['POST'])
 def create_database(db_name):
-    message = db_manager.create_database(db_name)
+    message = db_manager.create(db_name)
     return jsonify(message)
 
 
@@ -74,47 +68,3 @@ def delete_table(db_name, table_name):
 
 if __name__ == "__main__":
     app.run(debug=True)
-
-# def detect_objects(image):
-#     return image
-#
-# @app.route('/upload-image', methods=['GET', 'POST'])
-# def upload_file():
-#     if request.method == 'POST':
-#         print(request.files)
-#         if 'image' not in request.files:
-#             flash('No image part')
-#             return redirect(request.url)
-#
-#         file = request.files['image']
-#
-#         if file.filename == '':
-#             flash('No selected file')
-#             return redirect(request.url)
-#
-#         if file and allowed_file(file.filename):
-#             filename = secure_filename(file.filename)
-#
-#             file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-#             file.save(file_path)
-#
-#             detector.detect_image(file_path)
-#
-#             return redirect(url_for('uploaded_file',
-#                                     filename=filename))
-#     return '''
-#     <!doctype html>
-#     <title>Upload new File</title>
-#     <h1>Upload new File</h1>
-#     <form method=post enctype=multipart/form-data>
-#       <input type=file name=file>
-#       <input type=submit value=Upload>
-#     </form>
-#     '''
-#
-# from flask import send_from_directory
-#
-# @app.route('/uploads/<filename>')
-# def uploaded_file(filename):
-#     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-#

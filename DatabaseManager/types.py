@@ -24,6 +24,9 @@ class RealInvl:
         self._min = _min
         self._max = _max
 
+class Date:
+    pass
+
 class Picture:
     pass
 
