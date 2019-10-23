@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+
+<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>DatabaseManager</title>
+</head>
+<body>
+<script type="text/javascript" src="{{ url_for('static', filename = 'jquery-3.4.1.slim.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename = 'script.js') }}"></script>
+
+<div id="main">
+<input type="button" value="Load table names" onclick="load_db_names()">
+
+</div>
+
+</body>
+</html>
