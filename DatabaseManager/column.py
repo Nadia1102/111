@@ -12,19 +12,16 @@ class ColumnType(IntEnum):
     PICTURE = 8
 
     def default(self):
-        return [0, 0.0, '', '', RealInvl(), CharInvl(), Date(), Picture()][self.value]
+        return [0, 0.0, '', '', RealInvl(), CharInvl(), Date(), Picture()][self.value-1]
 
 class Column:
     def __init__(self, column_type: ColumnType, column_size = 0):
         self.column_type = column_type
-        self._column_data = [ColumnType(column_type.default) for _ in range(column_size)]
+        self._column_data = [column_type.default() for _ in range(column_size)]
 
     def append_zeros(self, column_type, count = 0):
         self._column_data.extend([column_type.default() for _ in range(count)])
 
     def append_values(self, values):
-        for value in values:
-            if not type(value) == self.column_type:
-                raise 'Incorrect data type'
         self._column_data.extend(values)
 

@@ -19,13 +19,13 @@ class Row:
         return self._schema
 
 class Table:
-    _table_name = ""
-    _schema = None
-    _column_dict = {}
-
     def __init__(self, table_name, schema : Schema):
         self._table_name = table_name
         self._schema = schema
+        self._column_dict = {}
+
+        for column_name, column_type in self._schema.schema_list:
+            self._column_dict[column_name] = []
 
     @property
     def table_name(self):
@@ -39,8 +39,8 @@ class Table:
         if row.schema != self._schema:
             raise Exception('Incorrect schema')
 
-        for column_name, entry in zip(self._schema, row.data):
-            self._column_dict[column_name].append(entry)
+        for (c_name, c_type), entry in zip(self._schema.schema_list, row.data):
+            self._column_dict[c_name].append(entry)
 
     def delete_row(self, row_index):
         for column_name in self._schema.get_list():
@@ -75,6 +75,15 @@ class Table:
 
     def save_database(self):
         json.dump(self, self.table_name + '.table')
+
+    @classmethod
+    def from_json(cls, data):
+        table = cls(data['_table_name'], data['_schema'])
+        for key, value in data['_column_dict']:
+            table._column_dict[key] = Column(value['_column_type'])
+        students = list(map(Student.from_json, data["students"]))
+        return cls(students)
+
 
     # def get_table_projection(self, row_indices = None, column_names = None):
     #     if row_indices is None:

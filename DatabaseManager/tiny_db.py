@@ -6,11 +6,10 @@ import jsonpickle
 import json
 
 class TinyDB:
-    _databases = []
-    _db_registry = {}
 
     def __init__(self):
         self._databases = json.load(open('data/_info.json'))
+        self._db_registry = {}
 
     def get_all(self):
         return self._databases
@@ -30,11 +29,19 @@ class TinyDB:
 
     def _load_database(self, db_name):
         with open(get_filename(db_name)) as f:
-            db = jsonpickle.decode(f.read())
+            print(db_name)
+            txt = f.read()
+            print(txt)
+            d = json.loads(txt)
+            print(d["table_names"])
+            db = Database(d["table_names"])
+            print("> ", list(db._tables_map.keys()))
             self._db_registry[db_name] = db
+            print(self._db_registry[db_name])
 
     def _save_database(self, db_name):
         with open(get_filename(db_name)) as f:
             db = self._db_registry[db_name]
             json_object = jsonpickle.encode(db)
             f.write(json_object)
+            print("SAVE", db_name, db._tables_map.keys())

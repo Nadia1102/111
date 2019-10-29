@@ -1,0 +1,34 @@
+{
+  "_table_name": "Cats",
+  "_schema": [
+    [
+      "id",
+      1
+    ],
+    [
+      "name",
+      4
+    ],
+    [
+      "weight",
+      2
+    ]
+  ],
+  "_column_dict": {
+    "id": [
+      1,
+      2,
+      3
+    ],
+    "name": [
+      "Mazya",
+      "Iguana",
+      "Uraeginthus granatina"
+    ],
+    "weight": [
+      12,
+      20,
+      1023
+    ]
+  }
+}

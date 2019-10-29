@@ -1,20 +1,17 @@
 import json
 import os
+from .schema import Schema
 from .table import Table
+from .utils import get_filename
 
 def format_file_name(table_name):
     return table_name
 
 
 class Database:
-    _database_name = ""
-    _tables_map = {}
 
-    def __init__(self):
-        self.load_database_info()
-
-    def load_database_info(self):
-        table_names = json.load('.database-info')
+    def __init__(self, table_names):
+        self._tables_map = {}
         for name in table_names:
             self._tables_map[name] = None
 
@@ -29,7 +26,14 @@ class Database:
     def load_table(self, table_name):
         self._tables_map = Table.create_from_json(json.load(format_file_name(table_name)))
 
-    def get_table(self, table_name):
+    def get_table(self, db_name, table_name):
+        d = json.load(open(get_filename(db_name, table_name),'r'))
+        s = Schema(d['_schema'])
+
+        t = Table(d['_table_name'], s)
+        t._column_dict = d['_column_dict']
+        self._tables_map[table_name] = t
+
         return self._tables_map[table_name]
 
     def save_table(self, table_name):

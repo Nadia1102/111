@@ -5,21 +5,24 @@ from .column import Column, ColumnType
 
 import json
 
+
 class RestEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, Schema):
             return obj.schema_list
 
         if isinstance(obj, Table):
-            return obj._schema, obj._column_dict
+            return {"_table_name": obj._table_name,
+                    "_schema": obj._schema,
+                    "_column_dict": obj._column_dict}
 
         if isinstance(obj, Database):
-            return obj._tables_map.keys()
+            return list(obj._tables_map.keys())
 
         if isinstance(obj, ColumnType):
             return obj.name, obj.value
 
         if isinstance(obj, Column):
-            return obj.column_type, obj._column_data
+            return obj.__dict__
 
         return json.JSONEncoder.default(self, obj)
